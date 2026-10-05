@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>I Love You Jahir</title>
+
+<style>
+
+body{
+    margin:0;
+    overflow:hidden;
+    background:black;
+    font-family:Arial,sans-serif;
+}
+
+#heart{
+    position:absolute;
+    width:100%;
+    height:100%;
+}
+
+.word{
+    position:absolute;
+    color:#2acef3;
+    font-size:18px;
+    opacity:0;
+    white-space:nowrap;
+
+    letter-spacing:1.5px;
+    word-spacing:6px;
+
+    text-shadow:
+        0 0 5px #188eae,
+        0 0 10px #249ac9,
+        0 0 20px #2dc3f9;
+
+    transform:translate(-50%,-50%);
+}
+
+#centerText{
+    position:absolute;
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:100%;
+
+    text-align:center;
+    white-space:nowrap;
+
+    color:white;
+    font-size:60px;
+    font-weight:bold;
+
+    text-shadow:
+        0 0 10px #46b7e1,
+        0 0 20px #086f9f,
+        0 0 40px #187fb2;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="heart"></div>
+<div id="centerText"></div>
+
+<script>
+
+const container = document.getElementById("heart");
+
+const total = 100;
+
+const cx = window.innerWidth / 2;
+const cy = window.innerHeight / 2;
+
+let points = [];
+
+for(let i=0;i<total;i++){
+
+    let t = (i/total) * Math.PI * 2;
+
+    let x =
+        18 * Math.pow(Math.sin(t),3);
+
+    let y =
+        15*Math.cos(t)
+        -5*Math.cos(2*t)
+        -2*Math.cos(3*t)
+        -Math.cos(4*t);
+
+    points.push({
+        x:x,
+        y:y
+    });
+}
+
+points.forEach((p,index)=>{
+
+    setTimeout(()=>{
+
+        let div = document.createElement("div");
+
+        div.className = "word";
+
+        div.innerText = "𝓘   𝓛𝓸𝓿𝓮   𝓨𝓸𝓾";
+
+        div.style.left =
+            (cx + p.x*24) + "px";
+
+        div.style.top =
+            (cy - p.y*17) + "px";
+
+        div.style.opacity = "1";
+
+        container.appendChild(div);
+
+    }, index * 35);
+
+});
+
+setTimeout(()=>{
+
+    let text = "𝓘 𝓵𝓸𝓿𝓮 𝔂𝓸𝓾 𝓙𝓪𝓱𝓲𝓻";
+
+    let i = 0;
+
+    let target =
+    document.getElementById("centerText");
+
+    target.innerHTML = "";
+
+    let timer = setInterval(()=>{
+
+        target.innerHTML += text[i];
+
+        i++;
+
+        if(i >= text.length){
+
+            clearInterval(timer);
+
+        }
+
+    },100);
+
+},5000);
+
+</script>
+
+</body>
+</html>
