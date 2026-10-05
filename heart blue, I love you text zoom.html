@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Love You Jahir ❤️</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow:hidden;
+    background:black;
+}
+
+canvas{
+    display:block;
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+
+window.addEventListener("resize", resize);
+
+const WORDS = ["LOVE YOU"];
+const CENTER_TEXT = "I Love You Jahir";
+
+const COLORS = [
+    "#4682B4",
+    "#1E90FF",
+    "#00BFFF",
+    "#6495ED",
+    "#4169E1"
+];
+
+let frame = 0;
+const particles = [];
+let heartPulse = 1;
+let cameraZoom = 1;
+let moveX = 0;
+let moveY = 0;
+
+function heart(t){
+    return {
+        x:16*Math.pow(Math.sin(t),3),
+        y:-(13*Math.cos(t)
+        -5*Math.cos(2*t)
+        -2*Math.cos(3*t)
+        -Math.cos(4*t))
+    };
+}
+
+class Particle{
+
+    constructor(t,inside=false){
+
+        let h = heart(t);
+
+        let r = inside ? (0.40 + Math.random()*0.55) : 1;
+
+        this.x = h.x*r;
+        this.y = h.y*r;
+
+        this.alpha = 0;
+
+        this.delay = Math.random()*200;
+
+        this.color =
+            COLORS[Math.floor(
+                Math.random()*COLORS.length
+            )];
+
+        this.size =
+            12 + Math.random()*12;
+
+        this.flick =
+            Math.random()*Math.PI*2;
+    }
+
+    draw(){
+
+        if(frame > this.delay){
+            this.alpha += 4;
+        }
+
+        if(this.alpha > 180){
+            this.alpha = 180;
+        }
+
+        let glow =
+        (0.8 + 0.2*Math.sin(
+            frame*0.04+this.flick
+        ));
+
+        ctx.save();
+
+        ctx.translate(
+    canvas.width/2 + moveX,
+    canvas.height/2 + moveY
+);
+
+ctx.scale(
+    cameraZoom,
+    cameraZoom
+);
+
+        ctx.globalAlpha =
+        (this.alpha/250)*glow;
+
+        ctx.fillStyle = this.color;
+
+        ctx.font =
+        `bold ${this.size}px Arial`;
+
+        ctx.textAlign="center";
+
+        ctx.shadowBlur=30;
+        ctx.shadowColor=this.color;
+
+        ctx.fillText(
+    "LOVE YOU",
+    this.x*18*heartPulse,
+    this.y*18*heartPulse
+);
+
+        ctx.restore();
+    }
+}
+
+for(let i=0;i<160;i++){
+    particles.push(
+        new Particle(
+            i*Math.PI*2/140,
+            false
+        )
+    );
+}
+
+for(let i=0;i<120;i++){
+    particles.push(
+        new Particle(
+            Math.random()*Math.PI*2,
+            true
+        )
+    );
+}
+
+function drawCenter(){
+
+
+    if(frame < 360) return;
+
+    let pulse =
+    1 + 0.05*Math.sin(frame*0.05);
+
+    ctx.save();
+
+    ctx.globalAlpha =
+    Math.min(
+        1,
+        (frame-360)/80
+    );
+
+    ctx.font =
+    `bold ${60*pulse}px Georgia`;
+
+    ctx.textAlign="center";
+
+    ctx.fillStyle="#6fb0d5";
+
+    ctx.shadowColor="#3e359a";
+    ctx.shadowBlur=40;
+
+    ctx.translate(
+    moveX,
+    moveY
+);
+
+ctx.scale(
+    cameraZoom,
+    cameraZoom
+);
+
+ctx.fillText(
+    CENTER_TEXT,
+    canvas.width/(2*cameraZoom),
+    canvas.height/(2*cameraZoom)
+);
+
+    ctx.restore();
+}
+
+function drawSignature(){
+
+    if(frame < 420) return;
+
+    let alpha = Math.min(
+        1,
+        (frame - 420) / 120
+    );
+
+    ctx.restore();
+}
+
+function animate(){
+
+    frame++;
+
+    heartPulse =
+1 + 0.05 * Math.sin(frame * 0.05);
+cameraZoom =
+1 + 0.25 * Math.sin(frame * 0.008);
+
+moveX =
+Math.sin(frame * 0.008) * 30;
+
+moveY =
+Math.cos(frame * 0.006) * 20;
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    particles.forEach(p=>p.draw());
+
+    drawCenter();
+
+    drawSignature();
+
+    requestAnimationFrame(
+        animate
+    );
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
