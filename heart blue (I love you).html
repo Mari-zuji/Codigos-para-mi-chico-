@@ -53,6 +53,9 @@ const COLORS = [
 let frame = 0;
 const particles = [];
 let heartPulse = 1;
+let cameraZoom = 1;
+let moveX = 0;
+let moveY = 0;
 
 function heart(t){
     return {
@@ -109,9 +112,14 @@ class Particle{
         ctx.save();
 
         ctx.translate(
-            canvas.width/2,
-            canvas.height/2
-        );
+    canvas.width/2 + moveX,
+    canvas.height/2 + moveY
+);
+
+ctx.scale(
+    cameraZoom,
+    cameraZoom
+);
 
         ctx.globalAlpha =
         (this.alpha/250)*glow;
@@ -180,11 +188,21 @@ function drawCenter(){
     ctx.shadowColor="#3e359a";
     ctx.shadowBlur=40;
 
-    ctx.fillText(
-        CENTER_TEXT,
-        canvas.width/2,
-        canvas.height/2
-    );
+    ctx.translate(
+    moveX,
+    moveY
+);
+
+ctx.scale(
+    cameraZoom,
+    cameraZoom
+);
+
+ctx.fillText(
+    CENTER_TEXT,
+    canvas.width/(2*cameraZoom),
+    canvas.height/(2*cameraZoom)
+);
 
     ctx.restore();
 }
@@ -198,25 +216,6 @@ function drawSignature(){
         (frame - 420) / 120
     );
 
-    ctx.save();
-
-    ctx.globalAlpha = alpha;
-
-    ctx.font = "italic bold 28px Georgia";
-
-    ctx.fillStyle = "white";
-
-    ctx.textAlign = "right";
-
-    ctx.shadowColor = "white";
-    ctx.shadowBlur = 20;
-
-    ctx.fillText(
-        "Del amor de tu vida",
-        canvas.width - 30,
-        canvas.height - 30
-    );
-
     ctx.restore();
 }
 
@@ -226,6 +225,14 @@ function animate(){
 
     heartPulse =
 1 + 0.05 * Math.sin(frame * 0.05);
+cameraZoom =
+1 + 0.25 * Math.sin(frame * 0.008);
+
+moveX =
+Math.sin(frame * 0.008) * 30;
+
+moveY =
+Math.cos(frame * 0.006) * 20;
 
     ctx.clearRect(
         0,
